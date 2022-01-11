@@ -1,36 +1,11 @@
 <template>
   <div class="teamsListComponent">
     <h1>{{ title }}</h1>
-    <template>
-      <v-simple-table dense>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-left">Id</th>
-              <th class="text-left">Nombre</th>
-              <th class="text-left">Presupuesto</th>
-              <th class="text-left">Color</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="team in teams" :key="team.id">
-              <td>
-                {{ team.id }}
-              </td>
-              <td width="400">
-                {{ team.name }}
-              </td>
-              <v-chip dark>
-                {{ team.budget }}
-              </v-chip>
-              <td>
-                {{ team.mainColor }}
-              </td>
-            </tr>
-          </tbody>
-        </template>
-      </v-simple-table>
-    </template>
+    <v-data-table hide-default-footer :headers="headers" :items="teams">
+      <template v-slot:[`item.mainColor`]="{ item }">
+        <v-chip dark outlined :color="getColor(item.mainColor)"> **** </v-chip>
+      </template></v-data-table
+    >
   </div>
 </template>
 
@@ -43,6 +18,15 @@ export default {
   props: ["title"],
   data: () => ({
     teams: [],
+    headers: [
+      {
+        text: "Nombre",
+        align: "left",
+        value: "name",
+      },
+      { text: "Presupuesto", value: "budget" },
+      { text: "Color", value: "mainColor" },
+    ],
   }),
   created() {
     console.log("created", db);
@@ -79,6 +63,11 @@ export default {
         }
       });
     });
+  },
+  methods: {
+    getColor(color) {
+      return color;
+    },
   },
 };
 </script>

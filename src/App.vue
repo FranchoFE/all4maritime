@@ -26,6 +26,7 @@
         <span class="font-weight-light">Maritime</span>
         <span>4All</span>
       </v-toolbar-title>
+
       <v-spacer></v-spacer>
 
       <template>
@@ -54,6 +55,8 @@
         </div>
       </template>
 
+      <LoginMenuComponent />
+
       <v-btn text color="grey">
         <span>SignOut</span>
         <v-icon right>mdi-exit-to-app</v-icon>
@@ -67,6 +70,9 @@
 </template>
 
 <script>
+import store from "@/store/index.js";
+import LoginMenuComponent from "@/components/LoginMenuComponent";
+
 export default {
   data: () => ({
     drawer: null,
@@ -80,5 +86,21 @@ export default {
       { text: "SignOut", icon: "mdi-exit-to-app", link: "/logout" },
     ],
   }),
+
+  computed: {
+    username() {
+      const user = store.getters.user;
+      let username = "";
+      if (user.loggedIn) {
+        username = user.data.email;
+      }
+
+      return username;
+    },
+  },
+
+  components: {
+    LoginMenuComponent,
+  },
 };
 </script>

@@ -1,38 +1,34 @@
 <template>
   <div class="SignIn">
     <h1>SignIn</h1>
+    <v-form ref="form">
+      <v-container>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="email"
+              label="E-mail"
+              required
+            ></v-text-field>
+          </v-col>
 
-    <v-container class="grey lighten-5">
-      <p v-if="error">Error en la introducción de credenciales</p>
-      <v-row>
-        <v-col cols="12" xs="12" sm="6" md="4" class="pa-md-4"
-          ><v-text-field
-            label="Nombre"
-            placeholder="Pon aquí tu nombre de usuario"
-          >
-            {{ this.name }}
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" xs="12" sm="6" md="4" class="pa-md-4">
-          <v-text-field
-            label="Correo Electrónico"
-            placeholder="Correo electrónico"
-          >
-            {{ this.email }}
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" xs="12" sm="6" md="4" class="pa-md-4">
-          <v-text-field type="password" label="Password" placeholder="password">
-            {{ this.password }}
-          </v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="pa-md-4">
-          <v-btn @click="signIn">Login</v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="password"
+              type="password"
+              label="Password"
+              placeholder="password"
+            >
+            </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="pa-md-4">
+            <v-btn @click="signIn">Login</v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-form>
   </div>
 </template>
 
@@ -44,7 +40,6 @@ export default {
   name: "SignIn",
   data: () => ({
     error: false,
-    name: "",
     email: "",
     password: "",
   }),

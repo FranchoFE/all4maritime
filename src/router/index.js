@@ -8,9 +8,7 @@ import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import LogOut from "@/views/LogOut";
 
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
+import store from "@/store/index.js";
 
 Vue.use(VueRouter);
 
@@ -41,11 +39,17 @@ const routes = [
     path: "/players",
     name: "Players",
     component: Players,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/teams",
     name: "Teams",
     component: Teams,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/signUp",
@@ -61,6 +65,9 @@ const routes = [
     path: "/logOut",
     name: "LogOut",
     component: LogOut,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
@@ -73,13 +80,15 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((x) => x.meta.requiresAuth);
   if (requiresAuth) {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        next("/");
-      } else {
-        next();
-      }
-    });
+    console.log("Esta página requiere auth");
+    const user = store.getters.user;
+    if (user.loggedIn) {
+      console.log("Autenticado");
+      next();
+    } else {
+      console.log("NO Autenticado");
+      next("/");
+    }
   } else {
     next();
   }

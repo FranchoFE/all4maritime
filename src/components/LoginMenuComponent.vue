@@ -4,8 +4,8 @@
       <div class="text-center">
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn text color="grey" dark v-bind="attrs" v-on="on">
-              <v-icon color="grey">mdi-menu-down-outline</v-icon>
+            <v-btn text v-bind="attrs" v-on="on">
+              <v-icon>mdi-menu-down-outline</v-icon>
               <span>{{ username }}</span>
             </v-btn>
           </template>
@@ -17,8 +17,8 @@
               router
               :to="item.link"
             >
-              <v-list-item-title class="grey--text">
-                <v-icon left color="grey">{{ item.icon }}</v-icon>
+              <v-list-item-title>
+                <v-icon left>{{ item.icon }}</v-icon>
                 <span>{{ item.text }}</span>
               </v-list-item-title>
             </v-list-item>
@@ -31,8 +31,8 @@
       <div class="text-center">
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn text color="grey" dark v-bind="attrs" v-on="on">
-              <v-icon color="grey">mdi-menu-down-outline</v-icon>
+            <v-btn text v-bind="attrs" v-on="on">
+              <v-icon>mdi-menu-down-outline</v-icon>
               <span>LogIn</span>
             </v-btn>
           </template>
@@ -44,8 +44,8 @@
               router
               :to="item.link"
             >
-              <v-list-item-title class="grey--text">
-                <v-icon left color="grey">{{ item.icon }}</v-icon>
+              <v-list-item-title>
+                <v-icon left>{{ item.icon }}</v-icon>
                 <span>{{ item.text }}</span>
               </v-list-item-title>
             </v-list-item>

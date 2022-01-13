@@ -39,8 +39,8 @@
               v-model="passwordConfirm"
               :rules="[password === passwordConfirm || 'Password must match']"
               type="password"
-              label="Password"
-              placeholder="password"
+              label="Confirm Password"
+              placeholder="confirm password"
             >
             </v-text-field>
           </v-col>

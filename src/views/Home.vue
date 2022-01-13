@@ -1,12 +1,26 @@
 <template>
   <div class="home">
-    <h1>Hola</h1>
-    <v-btn class="pink white--text">click me</v-btn>
+    <FirstComponent />
+    <SecondComponent />
+    <ThirdComponent />
+    <FourthComponent />
   </div>
 </template>
 
 <script>
+import FirstComponent from "@/components/landing/FirstComponent";
+import SecondComponent from "@/components/landing/SecondComponent";
+import ThirdComponent from "@/components/landing/ThirdComponent";
+import FourthComponent from "@/components/landing/FourthComponent";
+
 export default {
   name: "Home",
+
+  components: {
+    FirstComponent,
+    SecondComponent,
+    ThirdComponent,
+    FourthComponent,
+  },
 };
 </script>

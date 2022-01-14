@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 
 // Follow this pattern to import other Firebase services
 // import { } from 'firebase/<service>';
@@ -18,3 +18,4 @@ const firebaseConfig = {
 console.log("inicializando App");
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+connectFirestoreEmulator(db, "localhost", 8090);

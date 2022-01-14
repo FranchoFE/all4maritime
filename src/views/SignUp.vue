@@ -57,6 +57,7 @@
 
 <script>
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import store from "@/store/index.js";
 
 export default {
   name: "SignUp",
@@ -94,6 +95,8 @@ export default {
             // Signed in
             const user = userCredential.user;
             console.log("user", user);
+            this.$router.replace({ name: "Home" });
+            store.dispatch("fetchUser", user);
           })
           .catch((error) => {
             const errorCode = error.code;

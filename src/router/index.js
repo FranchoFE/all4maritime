@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Players from "@/views/Players";
 import Teams from "@/views/Teams";
+import Visits from "@/views/Visits";
 import Conversions from "@/views/Conversions";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
@@ -47,6 +48,14 @@ const routes = [
     path: "/teams",
     name: "Teams",
     component: Teams,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/visits",
+    name: "Visits",
+    component: Visits,
     meta: {
       requiresAuth: true,
     },

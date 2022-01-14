@@ -82,6 +82,7 @@ export default {
         show_always: false,
       },
       { text: "Teams", icon: "mdi-flag", link: "/teams", show_always: false },
+      { text: "Visits", icon: "mdi-flag", link: "/visits", show_always: false },
     ],
   }),
 

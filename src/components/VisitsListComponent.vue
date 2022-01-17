@@ -34,7 +34,7 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
           <div v-if="item.services">
-            <ServiceDescriptionComponent :services="getServices(item)" />
+            <ServiceDescriptionComponent :services="getAllServices(item)" />
           </div>
           <div v-else>No existen servicios asociados a la escala</div>
         </td>
@@ -149,6 +149,12 @@ export default {
             "para la escala",
             change.doc.data().visit
           );
+
+          const pos = this.services.map((val) => val.id).indexOf(change.doc.id);
+          this.services[pos] = {
+            ...change.doc.data(),
+            id: change.doc.id,
+          };
         } else if (change.type == "removed") {
           console.log("Eliminado servicio", change.doc.id);
         }
@@ -168,6 +174,9 @@ export default {
       }
 
       return datetime.toDate().toLocaleString();
+    },
+    getAllServices(element) {
+      return this.services.filter((service) => service.visit == element.id);
     },
     getServices(element) {
       var service = null;

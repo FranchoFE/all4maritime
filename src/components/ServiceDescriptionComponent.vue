@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row dense>
         <v-col
-          v-for="service in services"
+          v-for="(service, index) in services"
           :key="service.id"
           :cols="12"
           xs="12"
@@ -24,7 +24,7 @@
                 </v-list-item-subtitle>
               </v-list-item-content>
 
-              <v-avatar class="ma-3" size="125" tile>
+              <v-avatar class="ma-3" size="100" tile>
                 <v-img
                   :src="require('@/assets/' + getAvatar(service.company) + '')"
                 ></v-img>
@@ -32,9 +32,54 @@
             </v-list-item>
 
             <v-card-actions>
-              <v-btn outlined rounded text @click="set_start_time(service)">
-                Empezar
-              </v-btn>
+              <v-dialog
+                v-model="dialog[index]"
+                :retain-focus="false"
+                max-width="400px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                    Establecer Horas
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <p>Establecer horas</p>
+                    <p>para el servicio de {{ service.type }}</p>
+                  </v-card-title>
+
+                  <v-divider></v-divider>
+                  <v-card-text style="height: 300px">
+                    <v-datetime-picker
+                      label="Start Time:"
+                      v-model="start_time_selected[index]"
+                    >
+                    </v-datetime-picker>
+                    <v-datetime-picker
+                      label="End Time:"
+                      v-model="end_time_selected[index]"
+                    >
+                    </v-datetime-picker>
+                  </v-card-text>
+                  <v-divider></v-divider>
+                  <v-card-actions>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cancel_start_time(service, index)"
+                    >
+                      Close
+                    </v-btn>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="set_start_time(service, index)"
+                    >
+                      Save
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -70,6 +115,32 @@ export default {
 
   props: ["services"],
 
+  data() {
+    return {
+      start_time_selected: [],
+      end_time_selected: [],
+      dialog: [],
+    };
+  },
+
+  created() {
+    this.services.forEach((service) => {
+      var time_to_set = "";
+      if (service.start_time != null) {
+        time_to_set = service.start_time.toDate();
+      }
+      this.start_time_selected.push(time_to_set);
+
+      time_to_set = "";
+      if (service.end_time != null) {
+        time_to_set = service.end_time.toDate();
+      }
+      this.end_time_selected.push(time_to_set);
+
+      this.dialog.push(false);
+    });
+  },
+
   computed: {},
 
   methods: {
@@ -81,14 +152,15 @@ export default {
       return datetime.toDate().toLocaleString();
     },
     getAvatar(company) {
-      if (company == "CEPSA") {
+      if (company.toUpperCase() == "CEPSA") {
         return "cepsa.png";
+      } else if (company.toUpperCase() == "VOPAK") {
+        return "vopak.jpeg";
       }
-      return "vopak.jpeg";
+      return "unknown.png";
     },
 
     get_color(service) {
-      console.log(service);
       var border = "green_border";
       if (service.start_time === null) {
         border = "red_border";
@@ -98,13 +170,19 @@ export default {
       return "mx-auto " + border;
     },
 
-    async set_start_time(service) {
-      console.log("set_start_time", service.id);
+    cancel_start_time(service, index) {
+      console.log("cancel_start_time", service.id, index);
+      this.$set(this.dialog, index, false);
+    },
+
+    async set_start_time(service, index) {
+      console.log("set_start_time", service.id, index);
+      this.$set(this.dialog, index, false);
       const service_from_db = doc(db, "services", service.id);
-      console.log("servicio", service_from_db);
 
       await updateDoc(service_from_db, {
-        start_time: new Date(),
+        start_time: this.start_time_selected[index],
+        end_time: this.end_time_selected[index],
       });
     },
   },

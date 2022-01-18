@@ -80,6 +80,40 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <v-dialog
+                v-model="dialog_delete[index]"
+                :retain-focus="false"
+                max-width="400px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="secondary" dark v-bind="attrs" v-on="on">
+                    Borrar Servicio
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <p>¿Desea borrar el servicio?</p>
+                    <p>Tipo: {{ service.type }}</p>
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-card-actions>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="cancel_delete_service(service, index)"
+                    >
+                      Close
+                    </v-btn>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="confirm_delete_service(service, index)"
+                    >
+                      Borrar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -107,7 +141,7 @@
 </style>
 
 <script>
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "@/fb.js";
 
 export default {
@@ -120,6 +154,7 @@ export default {
       start_time_selected: [],
       end_time_selected: [],
       dialog: [],
+      dialog_delete: [],
     };
   },
 
@@ -138,6 +173,7 @@ export default {
       this.end_time_selected.push(time_to_set);
 
       this.dialog.push(false);
+      this.dialog_delete.push(false);
     });
   },
 
@@ -176,14 +212,39 @@ export default {
     },
 
     async set_start_time(service, index) {
-      console.log("set_start_time", service.id, index);
+      console.log(
+        "set_start_time",
+        service.id,
+        index,
+        this.start_time_selected[index],
+        this.end_time_selected[index]
+      );
       this.$set(this.dialog, index, false);
       const service_from_db = doc(db, "services", service.id);
 
-      await updateDoc(service_from_db, {
-        start_time: this.start_time_selected[index],
-        end_time: this.end_time_selected[index],
-      });
+      var data_to_update = {};
+      if (this.start_time_selected[index] != null) {
+        data_to_update["start_time"] = this.start_time_selected[index];
+      } else {
+        data_to_update["start_time"] = null;
+      }
+      if (this.end_time_selected[index] != null) {
+        data_to_update["end_time"] = this.end_time_selected[index];
+      } else {
+        data_to_update["end_time"] = null;
+      }
+      console.log("dato a mandar", data_to_update);
+
+      await updateDoc(service_from_db, data_to_update);
+    },
+
+    cancel_delete_service(service, index) {
+      this.$set(this.dialog_delete, index, false);
+    },
+
+    async confirm_delete_service(service, index) {
+      await deleteDoc(doc(db, "services", service.id));
+      this.$set(this.dialog_delete, index, false);
     },
   },
 };

@@ -57,7 +57,7 @@ const routes = [
     name: "Visits",
     component: Visits,
     meta: {
-      requiresAuth: true,
+      requiresAuth: false,
     },
   },
   {

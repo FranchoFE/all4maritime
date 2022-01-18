@@ -30,7 +30,6 @@ export default {
         .then(() => {
           console.log("Logout done");
           store.dispatch("fetchUser", null);
-          this.$router.replace({ name: "Home" });
         })
         .catch((error) => {
           console.log(error);

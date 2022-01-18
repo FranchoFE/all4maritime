@@ -37,7 +37,7 @@ export default {
   data: () => ({
     cards: [
       {
-        title: "Reverva",
+        title: "Reserva",
         text: "Reserve sus servicios de reparaciones, regigicads de residuos y otras cositas molonas",
         src: "https://cdn.vuetifyjs.com/images/cards/house.jpg",
         flex: 4,

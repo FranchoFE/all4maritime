@@ -3,23 +3,17 @@
     <v-container class="grey lighten-2">
       <v-row no-gutters>
         <v-col cols="12" sm="6">
-          <h1>All4Maritime</h1>
-          <h2>Advanced Digital Agent</h2>
-          <p class="grey--text">
+          <h1 style="color:#cccc00;">All4Maritime</h1>
+          <h2 style="color:#cccc00">ADVANCED DIGITAL AGENT</h2>
+          <p class="black--text">
             Compare y Reserve todo lo que necesite en su estancia en Algeciras
             al mejor precio
           </p>
           <v-container class="grey lighten-2">
             <v-row no-gutters>
-              <v-col cols="12" sm="6">
-                <v-btn class="info" @on-click="dialog = true">
-                  <span>Vídeo</span>
-                  <v-icon>mdi-video</v-icon>
-                </v-btn>
-              </v-col>
-              <v-col cols="12" sm="6">
+              <v-col cols="12" sm="12">
                 <v-btn class="info">
-                  <span>Comienza Aquí</span>
+                  <span>Iniciar sesión</span>
                   <v-icon>mdi-gesture-tap</v-icon>
                 </v-btn>
               </v-col>

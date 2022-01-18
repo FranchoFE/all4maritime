@@ -3,7 +3,10 @@
     <v-container class="yellow lighten-4">
       <v-row no-gutters>
         <v-col cols="12" sm="6">
-          <FormComponent />
+            <v-btn class="info">
+              <span>Registrarse</span>
+              <v-icon>mdi-gesture-tap</v-icon>
+            </v-btn>
         </v-col>
         <v-col cols="12" sm="6">
           <h2 class="withborder">Qué puede solucionar en All4Maritime:</h2>
@@ -39,14 +42,10 @@
 </template>
 
 <script>
-import FormComponent from "./FormComponent";
 
 export default {
   name: "SecondComponent",
 
-  components: {
-    FormComponent,
-  },
 };
 </script>
 

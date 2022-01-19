@@ -8,6 +8,7 @@ import Conversions from "@/views/Conversions";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import LogOut from "@/views/LogOut";
+import Settings from "@/views/Settings";
 
 import store from "@/store/index.js";
 
@@ -64,6 +65,11 @@ const routes = [
     path: "/signUp",
     name: "SignUp",
     component: SignUp,
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
   },
   {
     path: "/signIn",

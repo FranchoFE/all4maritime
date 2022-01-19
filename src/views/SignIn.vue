@@ -34,6 +34,8 @@
 
 <script>
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/fb.js";
 import store from "@/store/index.js";
 
 export default {
@@ -47,14 +49,12 @@ export default {
     signIn() {
       this.error = false;
       const auth = getAuth();
-      console.log("SignIn con usuario", this.email);
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("user", user);
-          this.$router.replace({ name: "Home" });
-          store.dispatch("fetchUser", user);
+
+          this.get_user_from_db(user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -64,6 +64,27 @@ export default {
           store.dispatch("fetchUser", null);
           this.error = true;
         });
+    },
+
+    async get_user_from_db(user) {
+      await getDoc(doc(db, "users", user.email))
+        .then((user_from_db) => {
+          const user_to_store =
+            this.get_user_to_store_from_user_from_db(user_from_db);
+
+          this.$router.replace({ name: "Home" });
+          store.dispatch("fetchUser", user_to_store);
+        })
+        .catch((error) => console.log("ERROR", error));
+    },
+
+    get_user_to_store_from_user_from_db(user_from_db) {
+      const user_to_store = {
+        name: user_from_db.data()["name"],
+        email: user_from_db.id,
+        company: user_from_db.data()["company"],
+      };
+      return user_to_store;
     },
   },
 };

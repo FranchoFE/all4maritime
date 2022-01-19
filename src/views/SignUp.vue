@@ -57,6 +57,8 @@
 
 <script>
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/fb.js";
 import store from "@/store/index.js";
 
 export default {
@@ -92,11 +94,12 @@ export default {
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, this.email, this.password)
           .then((userCredential) => {
-            // Signed in
+            // User created
             const user = userCredential.user;
-            console.log("user", user);
-            this.$router.replace({ name: "Home" });
-            store.dispatch("fetchUser", user);
+            user.displayName = this.firstname;
+            console.log("user2", user);
+
+            this.add_user_to_db(user);
           })
           .catch((error) => {
             const errorCode = error.code;
@@ -105,6 +108,25 @@ export default {
             console.log("errorMessage", errorMessage);
           });
       }
+    },
+
+    async add_user_to_db(user) {
+      const user_to_add = {
+        name: user.displayName,
+        email: user.email,
+        company: "CompanyName",
+      };
+      console.log("user to add", user_to_add);
+
+      await setDoc(doc(db, "users", user_to_add.email), user_to_add)
+        .then((user_added) => {
+          console.log("usuario añadido", user_added);
+          store.dispatch("fetchUser", user_to_add);
+          this.$router.replace({ name: "Home" });
+        })
+        .catch((error) => {
+          console.log("ERROR", error);
+        });
     },
   },
 };

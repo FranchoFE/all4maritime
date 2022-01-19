@@ -219,6 +219,14 @@ export default {
 
           const pos = this.services.map((val) => val.id).indexOf(change.doc.id);
           if (pos >= 0) {
+            const service_to_delete = this.services[pos];
+            const visit_pos = this.visits
+              .map((val) => val.id)
+              .indexOf(service_to_delete.visit);
+            console.log("Escala asociada al servicio (posición)", visit_pos);
+            const visit = this.visits[visit_pos];
+            console.log("Escala asociada al servicio", visit);
+            visit.services = visit.services - 1;
             this.services = this.services.splice(this.services, pos);
           }
         }

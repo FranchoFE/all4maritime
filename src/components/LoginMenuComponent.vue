@@ -63,7 +63,10 @@ export default {
   name: "LoginMenuComponent",
   data: () => ({
     selectedItem: 1,
-    loggedItems: [{ text: "LogOut", icon: "mdi-exit-to-app", link: "/logOut" }],
+    loggedItems: [
+      { text: "Configuración", icon: "mdi-edit", link: "/settings" },
+      { text: "LogOut", icon: "mdi-exit-to-app", link: "/logOut" },
+    ],
     items: [
       { text: "LogIn", icon: "mdi-clock", link: "/signIn" },
       { text: "SignUp", icon: "mdi-account", link: "/signUp" },
@@ -75,7 +78,7 @@ export default {
       const user = store.getters.user;
       let username = "SignIn";
       if (user.loggedIn) {
-        username = user.data.email;
+        username = user.data.displayName;
       }
 
       return username;

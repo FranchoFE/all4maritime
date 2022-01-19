@@ -1,10 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import Players from "@/views/Players";
-import Teams from "@/views/Teams";
-import Visits from "@/views/Visits";
-import Conversions from "@/views/Conversions";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import LogOut from "@/views/LogOut";
@@ -27,38 +23,6 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
-  },
-  {
-    path: "/conversions",
-    name: "Conversions",
-    component: Conversions,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/players",
-    name: "Players",
-    component: Players,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/teams",
-    name: "Teams",
-    component: Teams,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/visits",
-    name: "Visits",
-    component: Visits,
-    meta: {
-      requiresAuth: true,
-    },
   },
   {
     path: "/signUp",

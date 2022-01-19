@@ -12,6 +12,48 @@
   </v-app>
 </template>
 
+<style lang="scss">
+@import url("https://fonts.googleapis.com/css?family=Aldrich");
+
+.withborder 
+{
+  padding: 10px 10px 10px 20px;
+}
+
+.colorPrincipal
+{
+    color: #cccc00 !important;
+    background-color:#cccc00 !important;
+}
+
+.soloColorPrincipal
+{
+    color: #cccc00 !important;
+}
+
+.btnPrincipal
+{
+    background-color: #cccc00 !important;
+    color: white !important;
+}
+
+.titleComponent {
+  font-family: "Aldrich";
+  font-size: 15px;
+  text-align: left;
+}
+
+.titleComponentCenter {
+  font-family: "Aldrich";
+  font-size: 15px;
+  text-align: center;
+}
+
+.fontPrincipal {
+  font-family: "Aldrich";
+}
+</style>
+
 <script>
 import HeaderComponent from "@/components/HeaderComponent";
 import FooterComponent from "@/components/FooterComponent";

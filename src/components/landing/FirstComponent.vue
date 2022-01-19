@@ -1,58 +1,41 @@
 <template>
-  <div class="grey lighten-2">
-    <v-container class="grey lighten-2">
-      <v-row no-gutters>
-        <v-col cols="12" sm="6">
-          <h1 style="color:#cccc00;">All4Maritime</h1>
-          <h2 style="color:#cccc00">ADVANCED DIGITAL AGENT</h2>
-          <p class="black--text">
+    <v-container fluid class="white lighten-2">
+      <v-row class="white" >
+        <v-col cols="12" sm="5">
+          <h1 class="soloColorPrincipal fontPrincipal">All4Maritime</h1>
+          <h2 class="soloColorPrincipal fontPrincipal">ADVANCED DIGITAL AGENT</h2>
+          <p class="black--text fontPrincipal">
             Compare y Reserve todo lo que necesite en su estancia en Algeciras
             al mejor precio
           </p>
-          <v-container class="grey lighten-2">
-            <v-row no-gutters>
+          <v-container class="lighten-2">
+            <v-row align-content="center" no-gutters>
               <v-col cols="12" sm="12">
-                <v-btn class="info">
-                  <span>Iniciar sesión</span>
-                  <v-icon>mdi-gesture-tap</v-icon>
+                <v-btn relative class="btnPrincipal" :style="{left: '50%', transform:'translateX(-50%)'}">
+                  <span class="white--text">Iniciar sesión</span>
+                  <v-icon color="info">mdi-gesture-tap</v-icon>
                 </v-btn>
               </v-col>
             </v-row>
           </v-container>
         </v-col>
-        <v-col cols="12" sm="6">
-          <v-card flat class="grey lighten-2">
+        <v-col cols="12" sm="7" style="padding: 0">
+          <v-card flat class="lighten-2">
             <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/house.jpg"
-              class="white--text align-end rounded-xl"
+              src="@/assets/portada.jpg"
+              class="white--text align-end"
               height="300px"
             >
             </v-img>
           </v-card>
         </v-col>
       </v-row>
-      <v-dialog v-model="dialog" max-width="640px">
-        <v-card>
-          <youtube
-            :video-id="videoId"
-            @ready="ready"
-            @playing="playing"
-          ></youtube>
-        </v-card>
-      </v-dialog>
     </v-container>
-
-    <div class="svg-border-waves text-white">
-      <v-img
-        class="svg-border-waves text-white"
-        height="80"
-        src="@/assets/borderWavesBlue.svg"
-      />
-    </div>
-  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>
 
 <script>
 export default {
@@ -61,8 +44,7 @@ export default {
       dialog: false,
       playing: false,
       ready: false,
-      value: false,
-      videoId: "i8IvvHJssWE",
+      value: false
     };
   },
 };

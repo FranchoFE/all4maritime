@@ -1,37 +1,38 @@
 <template>
-  <div class="yellow lighten-4">
-    <p class="titleComponent">¿Qué opinan de All4Maritime?</p>
 
-    <OpinionComponent />
+<v-container fluid fill-height>
+  <v-row justify="center" align="center" class="colorPrincipal">
+    <v-col class="" sm="12" md="12">
+      <v-card class="colorPrincipal" flat>
+        <p class="white--text titleComponentCenter colorPrincipal">
+          Todo lo que necesitas en tu estancia en Algeciras en All4Maritime
+        </p>
+        <p class="white--text titleComponentCenter colorPrincipal">
+          ¿Cómo podemos ayudarte?
+        </p>            
+      </v-card>
+    </v-col>
+  </v-row>     
+  <v-row>
+    <v-col cols="12" class="" sm="12" md="12">
+      <v-btn relative class="btnPrincipal" :style="{left: '50%', transform:'translateX(-50%)'}">
+          <span class="white--text">Iniciar sesión</span>
+          <v-icon color="info">mdi-gesture-tap</v-icon>
+      </v-btn>
+    </v-col>
+  </v-row>         
+  </v-container>  
 
-    <div class="svg-border-waves text-white">
-      <v-img
-        class="svg-border-waves text-white"
-        height="80"
-        src="@/assets/borderWaves.svg"
-      />
-    </div>
-  </div>
 </template>
 
 <style scoped lang="scss">
-@import url("https://fonts.googleapis.com/css?family=Licorice");
-
-.titleComponent {
-  // font-family: "Arial";
-  font-size: 50px;
-  text-align: center;
-}
 </style>
 
+
 <script>
-import OpinionComponent from "./OpinionComponent";
-
 export default {
-  name: "FourthComponent",
-
-  components: {
-    OpinionComponent,
+  data() {
+    return {};
   },
 };
 </script>

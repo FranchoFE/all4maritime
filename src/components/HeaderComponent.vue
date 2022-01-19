@@ -1,43 +1,71 @@
 <template>
-  <v-app-bar app shrink-on-scroll class="yellow lighten-2">
+
+  <v-toolbar class="colorPrincipal">
+
+    <v-img
+      lazy-src="@/assets/logo-all.png"
+      max-height="80"
+      max-width="80"
+      src="@/assets/logo-all.png">
+    </v-img>
+
+    <v-spacer></v-spacer>
     
-      <v-toolbar-title class="text--uppercase">
-        <span>All4</span>
-        <span class="font-weight-light">Maritime</span>
-      </v-toolbar-title>
+    <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn class="btnPrincipal"
+        v-for="item in get_all_items()"
+        :key="item.text"
+        :to="item.link"
+      >{{ item.text }}
+      </v-btn>
+    </v-toolbar-items>
 
-      <v-spacer></v-spacer>
-
-      <template>
-        <div class="text-center">
-          <v-menu right>
-            <!--<template v-slot:activator="{ on, attrs }">
-              <v-btn text v-bind="attrs" v-on="on">
-                <v-icon>mdi-menu-down-outline</v-icon>
-                <span>Menú</span>
-              </v-btn>
-            </template>-->
-            <v-list>
-              <v-list-item
-                v-for="item in get_all_items()"
-                :key="item.text"
-                router
-                :to="item.link"
-              >
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
+    <!--<v-menu class="hidden-md-and-up">
+      <template v-slot:activator="{ on, attrs }">
+          <v-btn text v-bind="attrs" v-on="on">
+            <v-icon>mdi-menu-down-outline</v-icon>
+            <span>...</span>
+          </v-btn>
       </template>
+    <v-list>
+      <v-list-item
+        v-for="item in get_all_items()"
+        :key="item.text"
+        router
+        :to="item.link"
+      >
+        <v-list-item-title>{{ item.text }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+    </v-menu>-->
 
-      <LoginMenuComponent />
-    </v-app-bar>
+    <!--<template v-slot:activator="{ on }">
+      <v-btn class="" text v-bind="attrs" v-on="on">
+        <v-icon>mdi-menu-down-outline</v-icon>
+        <span>...</span>
+      </v-btn>
+    </template>
+
+    <v-menu class=" hidden-md-and-up">
+      <v-list class="">
+        <v-list-tile class="" v-for="item in get_all_items()" :key="item.text" :to="item.link">
+          <v-list-title-content class="">
+            <v-list-tile-title>{{ item.text }}</v-list-tile-title>
+            </v-list-title-content>
+        </v-list-tile>   
+      </v-list>
+    </v-menu>-->
+
+      
+  </v-toolbar>
+
 </template>
+
+
 
 <script>
 import store from "@/store/index.js";
-import LoginMenuComponent from "@/components/LoginMenuComponent";
+
 
 export default {
   data: () => ({
@@ -76,7 +104,7 @@ export default {
   },
 
   components: {
-    LoginMenuComponent,
+    
   },
 };
 </script>

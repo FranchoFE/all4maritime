@@ -50,7 +50,7 @@
 }
 
 .fontPrincipal {
-  font-family: "Aldrich";
+  font-family: "Aldrich" !important;
 }
 </style>
 

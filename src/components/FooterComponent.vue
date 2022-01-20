@@ -1,19 +1,16 @@
 <template>
-    <v-bottom-navigation class="yellow lighten-2">
+    <v-bottom-navigation class="btnPrincipal lighten-2">
       <v-btn>
-        <span>All4Maritime</span>
+        <span class="white--text title fontPrincipal">All4Maritime</span>
+      </v-btn>     
+      <v-btn class="btnPrincipal" >
+        <v-icon class="white">mdi-twitter</v-icon>
       </v-btn>
-      <v-btn>
-        <span>Recent</span>
-        <v-icon>mdi-history</v-icon>
+      <v-btn class="btnPrincipal" >
+        <v-icon class="white">mdi-facebook</v-icon>
       </v-btn>
-      <v-btn>
-        <span>Favorites</span>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-      <v-btn>
-        <span>Nearby</span>
-        <v-icon>mdi-map-marker</v-icon>
+      <v-btn class="btnPrincipal" >
+        <v-icon class="white">mdi-map-marker</v-icon>
       </v-btn>
     </v-bottom-navigation>
 </template>

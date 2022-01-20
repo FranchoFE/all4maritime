@@ -4,7 +4,8 @@ import Home from "../views/Home.vue";
 import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import LogOut from "@/views/LogOut";
-
+import ClientMonitoring from "@/views/ClientMonitoring";
+import SupplierMonitoring from "@/views/SupplierMonitoring";
 import store from "@/store/index.js";
 
 Vue.use(VueRouter);
@@ -24,6 +25,16 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
+  {
+    path: "/client",
+    name: "Client",
+    component: ClientMonitoring,
+  }, 
+  {
+    path: "/supplier",
+    name: "Supplier",
+    component: SupplierMonitoring,
+  }, 
   {
     path: "/signUp",
     name: "SignUp",

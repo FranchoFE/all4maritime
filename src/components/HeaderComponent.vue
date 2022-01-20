@@ -1,6 +1,6 @@
 <template>
 
-  <v-toolbar class="colorPrincipal">
+  <v-toolbar class="colorPrincipal" style="max-height: 77px">
 
     <v-img
       lazy-src="@/assets/logo-all.png"
@@ -20,43 +20,23 @@
       </v-btn>
     </v-toolbar-items>
 
-    <!--<v-menu class="hidden-md-and-up">
-      <template v-slot:activator="{ on, attrs }">
-          <v-btn text v-bind="attrs" v-on="on">
-            <v-icon>mdi-menu-down-outline</v-icon>
-            <span>...</span>
-          </v-btn>
+    <v-menu class="hidden-md-and-up">
+      <template v-slot:activator="{ on, attrs }">      
+        <v-app-bar-nav-icon v-bind="attrs" v-on="on" class="hidden-md-and-up" style="color: white !important;"></v-app-bar-nav-icon>
       </template>
-    <v-list>
-      <v-list-item
-        v-for="item in get_all_items()"
-        :key="item.text"
-        router
-        :to="item.link"
-      >
-        <v-list-item-title>{{ item.text }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
-    </v-menu>-->
-
-    <!--<template v-slot:activator="{ on }">
-      <v-btn class="" text v-bind="attrs" v-on="on">
-        <v-icon>mdi-menu-down-outline</v-icon>
-        <span>...</span>
-      </v-btn>
-    </template>
-
-    <v-menu class=" hidden-md-and-up">
-      <v-list class="">
-        <v-list-tile class="" v-for="item in get_all_items()" :key="item.text" :to="item.link">
-          <v-list-title-content class="">
-            <v-list-tile-title>{{ item.text }}</v-list-tile-title>
-            </v-list-title-content>
-        </v-list-tile>   
+      <v-list class="btnPrincipal">
+        <v-list-item
+          v-for="item in get_all_items()"
+          :key="item.text"
+          router
+          :to="item.link" 
+          class="btnPrincipal"         
+        >
+          <v-list-item-title>{{ item.text }}</v-list-item-title>
+        </v-list-item>
       </v-list>
-    </v-menu>-->
+    </v-menu>
 
-      
   </v-toolbar>
 
 </template>
@@ -73,8 +53,8 @@ export default {
     selectedItem: 1,
     items: [
       { text: "INICIO", icon: "mdi-clock", link: "/", show_always: true },
-      { text: "SERVICIOS", icon: "mdi-account", link: "/about", show_always: true },
-      { text: "PROVEEDORES", icon: "mdi-account", link: "/about", show_always: true },
+      { text: "SERVICIOS", icon: "mdi-account", link: "/client", show_always: true },
+      { text: "PROVEEDORES", icon: "mdi-account", link: "/supplier", show_always: true },
       { text: "LOGIN", icon: "mdi-account", link: "/about", show_always: true },
       { text: "CONTACTO", icon: "mdi-account", link: "/about", show_always: true },
     ],

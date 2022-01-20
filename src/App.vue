@@ -26,6 +26,11 @@
     background-color:#cccc00 !important;
 }
 
+.soloBckColorPrincipal
+{
+    background-color: #cccc00 !important;
+}
+
 .soloColorPrincipal
 {
     color: #cccc00 !important;
@@ -36,6 +41,8 @@
     background-color: #cccc00 !important;
     color: white !important;
 }
+
+
 
 .titleComponent {
   font-family: "Aldrich";

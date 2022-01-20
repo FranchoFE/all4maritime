@@ -1,55 +1,118 @@
 <template>
   <div class="visitsListComponent">
     <h2 class="fontPrincipal">{{ title }}</h2>
+
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="timeout"
+      top
+    >
+      {{ text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="white"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+          class="white--text"
+        >
+          Cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-data-table
       hide-default-footer
       :headers="headers"
       :items="visits"
       show-expand
     >
+
       <template v-slot:top>
         <v-toolbar flat>
           <v-dialog v-model="dialog" max-width="550px">
             <v-card>
-              <v-card-title>
-                <span class="fontPrincipal">{{ create_service_title }}</span>
+              <v-card-title class="colorPrincipal">
+                <span class="white--text fontPrincipal">{{ create_service_title }}</span>
               </v-card-title>
-              <v-card-text>
+              
+              <v-card-text class="pt-4">
                 <v-container>
                   <v-row>
-                    <v-col cols="12" sm="12">
                     <v-autocomplete
                       v-model="service_type_selected"
-                      :items="services_availables_type"
-                      dense
+                      :items="services_availables_type_data"                                            
                       rounded
                       filled
+                      dense
                       label="Tipo de Servicio"
-                    ></v-autocomplete>                      
-                    </v-col>
-                  </v-row>
-                  <v-row>
-                    <v-col cols="12" sm="12">
+                      color="#cccc00"
+                      item-color="black"
+                      @change="refreshCompanyTypeServices"
+                    ></v-autocomplete> 
+                  </v-row>   
+                  </v-container>
+                  <v-container>
+                  <v-row>                  
                    <v-autocomplete
                       v-model="company_name_selected"
-                      :items="services_availables_company"
+                      :items="services_availables_company_data"
                       dense
                       rounded
                       filled
                       label="Compañía"
+                      color="#cccc00"
+                      item-color="black"  
+                      @change="refreshPriceAndRatingAndUnitOfTypeServices"                    
                     ></v-autocomplete>                       
-                    </v-col>
                   </v-row>
+                  <v-row>
+                    <v-text-field
+                      v-model="price_selected"
+                      label="Tarifa"
+                      filled
+                      readonly
+                      color="#cccc00"
+                      rounded
+                      dense
+                  ></v-text-field>
+                      <v-text-field
+                      v-model="unit_selected"
+                          label="Unidad"
+                          filled
+                          readonly
+                          color="#cccc00"
+                          rounded
+                          dense
+                      ></v-text-field> 
+                  </v-row>        
+                  <v-row>    
+                    <span class="black--text text--lighten-2 text-caption mr-2">
+                        Valoración media:
+                    </span>                         
+                    <span class="black--text text--lighten-2 text-caption mr-2">
+                      ({{ rating_selected }})
+                    </span>
+                    <v-rating
+                      v-model="rating_selected"
+                      background-color="#cccc00"
+                      color="#cccc00" 
+                      lenght="5"
+                      half-increments
+                      readonly
+                    ></v-rating>                                                     
+                  </v-row>                    
                 </v-container>
               </v-card-text>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn class="btnPrincipal" text @click="close">
-                    <span class="white--text">Cancel</span>
+                    <span class="white--text">Cancelar</span>
                 </v-btn>                
                 <v-btn class="btnPrincipal" text @click="create_service">
-                    <span class="white--text">Registrar</span>
+                    <span class="white--text">Solicitar</span>
                 </v-btn>  
               </v-card-actions>
             </v-card>
@@ -59,8 +122,8 @@
       <template v-slot:[`item.company_ref`]="{ item }">
         <v-chip>
           {{ getCompany(item.company_ref) }}
-        </v-chip> </template
-      >      
+        </v-chip> 
+      </template>      
       <template v-slot:[`item.eta`]="{ item }">
         <v-chip>
           {{ getValue(item.eta) }}
@@ -88,7 +151,9 @@
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
           <div v-if="item.services">
-            <!--<ServiceDescriptionComponent :services="getAllServices(item)" />-->
+            <ServiceDescriptionComponent :services="getAllServices(item)" 
+            :services_availables="getAllServicesAvailables()"
+            :companies="getAllCompanies()" />
           </div>
           <div v-else>No existen servicios asociados a la escala</div>
         </td>
@@ -103,31 +168,41 @@
 </template>
 
 <script>
-//import ServiceDescriptionComponent from "./ServiceDescriptionComponent";
+import ServiceDescriptionComponent from "./ServiceDescriptionComponent";
 import { db } from "@/fb.js";
 import { collection, onSnapshot, addDoc } from "firebase/firestore";
 
 export default {
-  name: "VisitsListComponent",
+  name: "ServiceListComponent",
   props: ["title"],
 
-  /*components: {
+  components: {
     ServiceDescriptionComponent,
-  },*/
+  },
 
   data: () => ({
     create_service_title: "",
-    service_type_selected: "",
-    company_name_selected: "",
     visit_selected_to_create_service: null,
     dialog: false,
     visits: [],
     services: [],
     companies: [],
     services_availables: [],
-    services_availables_type: ['bunkering', 'mantenaince'],
-    services_availables_company: ['CEPSA', 'REPSOL'],
-    services_availables_price: ['20€', '30€'],
+    services_availables_type_data: [],
+    services_availables_type: [],
+    services_availables_company_data: [],
+    services_availables_company: [],
+    services_availables_price: [],
+    services_availables_unit_selected: '',
+    service_type_selected: "",
+    company_name_selected: "",
+    price_selected: "",
+    rating_selected: "",
+    unit_selected: "",
+    service_available_selected: "",
+    snackbar: false,
+    text: 'Servicio solicitado correctamente.',
+    timeout: 4000,
     headers: [
       {
         text: "Escala",
@@ -229,9 +304,6 @@ export default {
             ...change.doc.data(),
             id: change.doc.id
           });
-          /*this.services_availables_type.push({
-            ...change.doc.data().type
-          });*/
         } else if (change.type == "modified") {
           const pos = this.services_availables.map((val) => val.type).indexOf(change.doc.type);
           this.services_availables[pos] = {
@@ -242,8 +314,35 @@ export default {
           const pos = this.services_availables.map((val) => val.id).indexOf(change.doc.id);
           if (pos >= 0) {
             this.services_availables = this.services_availables.splice(this.services_availables, pos);
+          }
+        }
+      });
+    });
 
-            /*this.services_availables_type = this.services_availables_type.splice(this.services_availables_type, pos);*/
+    onSnapshot(collection(db, "service_available"), (querySnapshot) => {
+      const changes = querySnapshot.docChanges();
+
+      changes.forEach((change) => {
+        console.log("sat", change.doc.data());
+        console.log(change.type);
+        if (change.type == "added") {
+          this.services_availables_type.push({
+            ...change.doc.data(),
+            id: change.doc.id
+          });
+          this.refreshTypeServices();
+        } else if (change.type == "modified") {
+          const pos = this.services_availables_type.map((val) => val.type).indexOf(change.doc.type);
+          this.services_availables[pos] = {
+            ...change.doc.data(),
+            id: change.doc.id
+          };
+          this.refreshTypeServices();
+        } else if (change.type == "removed") {
+          const pos = this.services_availables.map((val) => val.id).indexOf(change.doc.id);
+          if (pos >= 0) {
+            this.services_availables_type = this.services_availables_type.splice(this.services_availables_type, pos);
+            this.refreshTypeServices();
           }
         }
       });
@@ -314,15 +413,39 @@ export default {
 
       return datetime.toDate().toLocaleString();
     },
-    getAllServices(element) {
+    getAllServices(element){
       return this.services.filter((service) => service.visit_ref == element.id);
     },
-    getCompany(element) {
+    getAllServicesAvailables(){
+      return this.services_availables;
+    },
+    getAllCompanies(){
+      return this.companies;
+    },    
+    getCompany(element){
       var comp = this.companies.filter((company) => company.id == element);
       if(comp!= null && comp.length == 1)
         return comp[0].name;
       return '';  
     },
+    refreshTypeServices(){
+        this.services_availables_type_data = [];
+        this.services_availables_type.forEach((sat) => 
+        this.services_availables_type_data.push(sat.type));
+    },
+    refreshCompanyTypeServices(){
+      this.services_availables_company_data = [];
+        this.services_availables_type.filter((satt) => satt.type == this.service_type_selected).   
+          forEach((sat) => this.services_availables_company_data.push(this.getCompany(sat.company_ref)));
+    }, 
+    refreshPriceAndRatingAndUnitOfTypeServices(){
+      var e = this.services_availables_type.filter((satt) => 
+      satt.type == this.service_type_selected && this.getCompany(satt.company_ref) == this.company_name_selected)[0];
+      this.price_selected = e.price;
+      this.rating_selected = e.rating;
+      this.unit_selected = e.unit;
+      this.service_available_selected = e.id;
+    },          
     getServices(element) {
       var service = null;
       const pos = this.services.map((val) => val.visit_ref).indexOf(element.id);
@@ -340,15 +463,7 @@ export default {
     },
 
     initialize() {
-      /*this.visits.push({visitNumber: 1, vessel_name:1, company:4, imo:77, eta: null, ata:null, etd: null, atd:null, id: 4, services: 1});
-      this.visits.push({visit_number: 2, vessel_name:2, company:5, imo:78, eta: null, ata:null, etd: null, atd:null, id: 4, services: 0});
-      this.visits.push({visit_number: 3, vessel_name:3, company:6, imo:79, eta: null, ata:null, etd: null, atd:null, id: 4, services: 0});
-      this.visits.push({visit_number: 4, vessel_name:4, company:7, imo:72, eta: null, ata:null, etd: null, atd:null, id: 4, services: 0});
-      this.visits.push({visit_number: 5, vessel_name:5, company:8, imo:71, eta: null, ata:null, etd: null, atd:null, id: 4, services: 0});
-      this.visits.push({visit_number: 6, vessel_name:6, company:9, imo:73, eta: null, ata:null, etd: null, atd:null, id: 4, services: 0});
-      this.visits.push({visit_number: 7, vessel_name:7, company:10, imo:74, eta: null, ata:null, etd: null, atd:null, id: 4, services: 0});
-      this.visits.push({visit_number: 7, vessel_name:7, company:10, imo:74, eta: null, ata:null, etd: null, atd:null, id: 4, services: 0});
-      */
+
     },
 
     show_create_service_dialog(item) {
@@ -366,15 +481,17 @@ export default {
 
     async create_service() {
       const docRef = await addDoc(collection(db, "services"), {
-        company: this.company_name_selected,
-        type: this.service_type_selected,
+        service_available_ref: this.service_available_selected,
         real_start_time: null,
         real_end_time: null,        
         estimated_start_time: null,
         estimated_end_time: null,
-        visit: this.visit_selected_to_create_service.id,
+        visit_ref: this.visit_selected_to_create_service.id,
+        state: 'Requested'
       });
       console.log("Document written with ID: ", docRef.id);
+
+      this.snackbar = true;
 
       this.close();
     },

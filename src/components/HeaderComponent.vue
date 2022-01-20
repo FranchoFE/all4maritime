@@ -1,6 +1,6 @@
 <template>
 
-  <v-toolbar class="colorPrincipal" style="max-height: 77px">
+  <v-toolbar class="colorPrincipal" style="max-height: 66px">
 
     <v-img
       lazy-src="@/assets/logo-all.png"

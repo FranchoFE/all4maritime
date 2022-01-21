@@ -17,19 +17,13 @@
                   {{ getServiceAvailableType(service.service_available_ref) }}
                 </v-list-item-title>
                 <v-list-item-subtitle
-                  >Tiempo de inicio (estimado): {{ getValue(service.estimated_start_time) }}
+                  >Inicio: {{ getValue(service.estimated_start_time) }}
                 </v-list-item-subtitle>
                 <v-list-item-subtitle
-                  >Tiempo de fin (estimado): {{ getValue(service.estimated_end_time) }}
-                </v-list-item-subtitle>
-               <v-list-item-subtitle
-                  >Tiempo de inicio (real): {{ getValue(service.real_start_time) }}
-                </v-list-item-subtitle>
+                  >Fin: {{ getValue(service.estimated_end_time) }}
+                </v-list-item-subtitle>               
                 <v-list-item-subtitle
-                  >Tiempo de fin (real): {{ getValue(service.real_end_time) }}
-                </v-list-item-subtitle>                
-                <v-list-item-subtitle
-                   >State: {{ service.state }}
+                   >Estado: {{ service.state }}
                 </v-list-item-subtitle>              
               </v-list-item-content>
 
@@ -42,7 +36,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-dialog
+              <v-dialog v-if="rol == 'client'"
                 v-model="dialog[index]"
                 :retain-focus="false"
                 max-width="400px"
@@ -50,7 +44,7 @@
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn class="btnPrincipal" v-bind="attrs" v-on="on">
                     <span class="white--text">Establecer horas</span>
-                  </v-btn> 
+                  </v-btn>               
                 </template>
                 <v-card>
                   <v-card-title class="colorPrincipal">
@@ -67,7 +61,7 @@
                    
                     <template slot="button-cancel">
                       <v-btn class="btnPrincipal" text>
-                          <span class="white--text">Cancelar</span>
+                          Cancelar
                       </v-btn>    
                     </template>
                     <template slot="button-confirm">
@@ -107,10 +101,10 @@
                 </v-card>
               </v-dialog>
               <v-spacer></v-spacer>
-              <v-dialog
+              <v-dialog v-if="rol == 'client'"
                 v-model="dialog_delete[index]"
                 :retain-focus="false"
-                max-width="500px"
+                max-width="500px" 
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn class="btnPrincipal" v-bind="attrs" v-on="on">
@@ -134,6 +128,52 @@
                 </v-card-actions>                                    
                 </v-card>
               </v-dialog>
+              <v-dialog v-if="rol == 'supplier'"
+                v-model="dialog_change_state[index]"
+                :retain-focus="false"
+                max-width="600px" 
+                max-height="300px" 
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn class="btnPrincipal" v-bind="attrs" v-on="on">
+                    <span class="white--text">Cambiar Estado</span>
+                  </v-btn>                    
+                </template>
+                <v-card>
+                  <v-card-title class="colorPrincipal">
+                    <span class="white--text fontPrincipal">¿Desea cambiar el estado del servicio 
+                      de {{ getServiceAvailableType(service.service_available_ref) }} ?</span>
+                  </v-card-title>                  
+                  <v-divider></v-divider>
+                  <v-card-text style="height: 100px">
+          
+                   <v-row class="pt-12"> 
+                    <v-text-field
+                      v-model="service.state"
+                      label="Estado ACTUAL"
+                      readonly                      
+                    ></v-text-field>
+                      <v-select
+                      :items="states"
+                      v-model="state_selected[index]"
+                      dense
+                      rounded
+                      filled
+                      label="Seleccione el nuevo estado"
+                    ></v-select>
+                  </v-row>
+                 </v-card-text>
+                <v-card-actions class="pt-6"> 
+                  <v-spacer></v-spacer>
+                  <v-btn class="btnPrincipal" text @click="cancel_change_state_service(service, index)">
+                      <span class="white--text">Cancelar</span>
+                  </v-btn>                
+                  <v-btn class="btnPrincipal" text @click="set_change_state_service(service, index)">
+                      <span class="white--text">Confirmar</span>
+                  </v-btn>  
+                </v-card-actions>                                    
+                </v-card>  
+              </v-dialog>            
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
@@ -171,14 +211,17 @@ import 'vue-datetime/dist/vue-datetime.css';
 export default {
   name: "ServiceDescriptionComponent",
 
-  props: ["services", "services_availables", "companies"],
+  props: ["services", "services_availables", "companies", "rol"],
 
   data() {
     return {
       start_time_selected: [],
       end_time_selected: [],
+      state_selected: [],
       dialog: [],
       dialog_delete: [],
+      dialog_change_state: [],
+      states: ["Requested", "Planned", "In progress", "Finished"]
     };
   },
 
@@ -283,6 +326,31 @@ export default {
       await updateDoc(service_from_db, data_to_update);
     },
 
+    async set_change_state_service(service, index) {
+      console.log(
+        "set_state_service",
+        service.id,
+        index,
+        this.state_selected[index]
+      );
+      this.$set(this.dialog_change_state, index, false);
+      
+      const service_from_db = doc(db, "services", service.id);
+
+      var data_to_update = {};
+      if (this.state_selected[index] != null) {
+        data_to_update["state"] = this.state_selected[index];
+      } 
+      
+      console.log("dato a mandar", data_to_update);
+
+      await updateDoc(service_from_db, data_to_update);
+    },
+
+    cancel_change_state_service(service, index) {
+      this.$set(this.dialog_change_state, index, false);
+    },
+
     cancel_delete_service(service, index) {
       this.$set(this.dialog_delete, index, false);
     },
@@ -292,7 +360,6 @@ export default {
       this.$set(this.dialog_delete, index, false);
       this.start_time_selected = this.start_time_selected.splice(this.start_time_selected, index);
       this.end_time_selected = this.end_time_selected.splice(this.end_time_selected, index);
-
     },
   },
 };

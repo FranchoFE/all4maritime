@@ -1,7 +1,7 @@
 <template class="client">
   <div>
     <h1 class="fontPrincipal">Servicios contratados</h1>
-    <ServiceListComponent title="Todos mis servicios" />
+    <ServiceListComponent title="Todos mis servicios" rol="client"/>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import ServiceListComponent from "@/components/ServiceListComponent";
 
 export default {
-  name: "Services",
+  name: "ClientMonitoring",
   data: () => ({}),
   methods: {},
 

@@ -88,10 +88,10 @@
                       ></v-text-field> 
                   </v-row>        
                   <v-row>    
-                    <span class="black--text text--lighten-2 text-caption mr-2">
+                    <span class="black--text text--lighten-2 text-caption mt-3 mr-2">
                         Valoración media:
                     </span>                         
-                    <span class="black--text text--lighten-2 text-caption mr-2">
+                    <span class="black--text text--lighten-2 text-caption mt-3 mr-2">
                       ({{ rating_selected }})
                     </span>
                     <v-rating
@@ -153,12 +153,13 @@
           <div v-if="item.services">
             <ServiceDescriptionComponent :services="getAllServices(item)" 
             :services_availables="getAllServicesAvailables()"
-            :companies="getAllCompanies()" />
+            :companies="getAllCompanies()" 
+            :rol="getRol()"/>
           </div>
           <div v-else>No existen servicios asociados a la escala</div>
         </td>
-      </template>
-      <template v-slot:[`item.actions`]="{ item }">
+      </template>      
+      <template v-slot:[`item.actions`]="{ item }" v-if="this.rol == 'client'">
         <v-icon small class="mr-2" @click="show_create_service_dialog(item)">
           mdi-plus
         </v-icon>
@@ -174,7 +175,7 @@ import { collection, onSnapshot, addDoc } from "firebase/firestore";
 
 export default {
   name: "ServiceListComponent",
-  props: ["title"],
+  props: ["title", "rol"],
 
   components: {
     ServiceDescriptionComponent,
@@ -422,6 +423,9 @@ export default {
     getAllCompanies(){
       return this.companies;
     },    
+    getRol(){
+      return this.rol;
+    },       
     getCompany(element){
       var comp = this.companies.filter((company) => company.id == element);
       if(comp!= null && comp.length == 1)

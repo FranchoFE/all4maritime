@@ -21,7 +21,7 @@
                 </v-list-item-subtitle>
                 <v-list-item-subtitle
                   >Fin: {{ getValue(service.estimated_end_time) }}
-                </v-list-item-subtitle>               
+                </v-list-item-subtitle>                           
                 <v-list-item-subtitle
                    >Estado: {{ service.state }}
                 </v-list-item-subtitle>              
@@ -52,21 +52,31 @@
                       {{ getServiceAvailableType(service.service_available_ref) }} </span>
                   </v-card-title> 
                   <v-divider></v-divider>
-                  <v-card-text style="height: 300px">
+                  <v-card-text style="height: 150px">
 
-    
                   <datetime class="pt-6" v-model="start_time_selected[index]" type="datetime" input-id="startDate">
      
                     <label for="startDate" slot="before">Tiempo estimado de inicio</label>
                    
                     <template slot="button-cancel">
                       <v-btn class="btnPrincipal" text>
-                          Cancelar
+                        <v-icon>
+                          mdi-close
+                        </v-icon>                           
                       </v-btn>    
                     </template>
-                    <template slot="button-confirm">
+                    <template slot="button-confirm" slot-scope="scope">
                       <v-btn class="btnPrincipal" text>
-                          <span class="white--text">Confirmar</span>
+                        <span v-if='scope.step === "date"' class='white--text'>
+                          <v-icon>
+                            mdi-chevron-double-right
+                          </v-icon>                           
+                        </span>
+                        <span v-else class='white--text'>
+                          <v-icon>
+                            mdi-check
+                          </v-icon> 
+                        </span>
                       </v-btn> 
                     </template>                     
                   </datetime>
@@ -76,15 +86,26 @@
                       <label for="endDate" slot="before">Tiempo estimado de fin</label>
                     
                       <template slot="button-cancel">
-                        <v-btn class="btnPrincipal" text>
-                            <span class="white--text">Cancelar</span>
-                        </v-btn>    
-                      </template>
-                      <template slot="button-confirm">
-                        <v-btn class="btnPrincipal" text>
-                            <span class="white--text">Confirmar</span>
-                        </v-btn> 
-                      </template>                     
+                      <v-btn class="btnPrincipal">
+                        <v-icon>
+                          mdi-close
+                        </v-icon>                           
+                      </v-btn>    
+                    </template>
+                    <template slot="button-confirm" slot-scope="scope">
+                      <v-btn class="btnPrincipal">
+                        <span v-if='scope.step === "date"' class='white--text'>
+                          <v-icon>
+                            mdi-chevron-double-right
+                          </v-icon>                           
+                        </span>
+                        <span v-else class='white--text'>
+                          <v-icon>
+                            mdi-check
+                          </v-icon> 
+                        </span>
+                      </v-btn> 
+                    </template>                    
                     </datetime>                    
                   </v-card-text>
                   
@@ -211,7 +232,7 @@ import 'vue-datetime/dist/vue-datetime.css';
 export default {
   name: "ServiceDescriptionComponent",
 
-  props: ["services", "services_availables", "companies", "rol"],
+  props: ["services", "services_availables", "companies", "rol", "visit"],
 
   data() {
     return {
@@ -245,6 +266,7 @@ export default {
 
       this.dialog.push(false);
       this.dialog_delete.push(false);
+      this.dialog_change_state.push(false);
     });
   },
 
@@ -255,6 +277,7 @@ export default {
       if (datetime === null) {
         return "--";
       }
+      console.log("LOGGI",datetime);
 
       return datetime.toDate().toLocaleString();
     },
@@ -311,13 +334,15 @@ export default {
       const service_from_db = doc(db, "services", service.id);
 
       var data_to_update = {};
-      if (this.start_time_selected[index] != null) {
+      if (this.start_time_selected[index] != null && this.start_time_selected[index] != '') {
         data_to_update["estimated_start_time"] = Timestamp.fromDate(new Date(this.start_time_selected[index]));
+        service.estimated_start_time = Timestamp.fromDate(new Date(this.start_time_selected[index]));
       } else {
         data_to_update["estimated_start_time"] = null;
       }
-      if (this.end_time_selected[index] != null) {
+      if (this.end_time_selected[index] != null && this.end_time_selected[index] != '') {
         data_to_update["estimated_end_time"] = Timestamp.fromDate(new Date(this.end_time_selected[index]));
+        service.estimated_end_time = Timestamp.fromDate(new Date(this.end_time_selected[index]));
       } else {
         data_to_update["estimated_end_time"] = null;
       }
@@ -340,8 +365,9 @@ export default {
       var data_to_update = {};
       if (this.state_selected[index] != null) {
         data_to_update["state"] = this.state_selected[index];
+        service.state = this.state_selected[index];
       } 
-      
+
       console.log("dato a mandar", data_to_update);
 
       await updateDoc(service_from_db, data_to_update);
@@ -358,8 +384,9 @@ export default {
     async confirm_delete_service(service, index) {
       await deleteDoc(doc(db, "services", service.id));
       this.$set(this.dialog_delete, index, false);
-      this.start_time_selected = this.start_time_selected.splice(this.start_time_selected, index);
-      this.end_time_selected = this.end_time_selected.splice(this.end_time_selected, index);
+      this.visit.services = this.visit.services - 1;
+      this.start_time_selected.splice(index, 1);
+      this.end_time_selected.splice(index, 1);
     },
   },
 };

@@ -154,7 +154,8 @@
             <ServiceDescriptionComponent :services="getAllServices(item)" 
             :services_availables="getAllServicesAvailables()"
             :companies="getAllCompanies()" 
-            :rol="getRol()"/>
+            :rol="getRol()"
+            :visit="item"/>
           </div>
           <div v-else>No existen servicios asociados a la escala</div>
         </td>
@@ -254,14 +255,14 @@ export default {
           this.visits[pos] = {
             ...change.doc.data(),
             id: change.doc.id,
-            services: 0,
+            services: this.visits[pos].services,
           };
 
           this.visits = this.visits.sort((a, b) => (b.eta < a.eta ? -1 : 1));
         } else if (change.type == "removed") {
           const pos = this.visits.map((val) => val.id).indexOf(change.doc.id);
           if (pos >= 0) {
-            this.visits = this.visits.splice(this.visits, pos);
+            this.visits.splice(pos, 1);
             this.visits = this.visits.sort((a, b) => b.estado - a.estado);
           }
         }
@@ -288,7 +289,7 @@ export default {
         } else if (change.type == "removed") {
           const pos = this.companies.map((val) => val.id).indexOf(change.doc.id);
           if (pos >= 0) {
-            this.companies = this.companies.splice(this.companies, pos);
+            this.companies.splice(pos, 1);
           }
         }
       });
@@ -314,7 +315,7 @@ export default {
         } else if (change.type == "removed") {
           const pos = this.services_availables.map((val) => val.id).indexOf(change.doc.id);
           if (pos >= 0) {
-            this.services_availables = this.services_availables.splice(this.services_availables, pos);
+            this.services_availables.splice(pos, 1);
           }
         }
       });
@@ -342,7 +343,7 @@ export default {
         } else if (change.type == "removed") {
           const pos = this.services_availables.map((val) => val.id).indexOf(change.doc.id);
           if (pos >= 0) {
-            this.services_availables_type = this.services_availables_type.splice(this.services_availables_type, pos);
+            this.services_availables_type.splice(pos, 1);
             this.refreshTypeServices();
           }
         }
@@ -394,7 +395,7 @@ export default {
 
           const pos = this.services.map((val) => val.id).indexOf(change.doc.id);
           if (pos >= 0) {
-            this.services = this.services.splice(this.services, pos);
+            this.services.splice(pos, 1);
           }
         }
       });
@@ -484,12 +485,23 @@ export default {
     },
 
     async create_service() {
+
+      var eta = null;
+      var etd = null;
+      if(this.visit_selected_to_create_service.eta != null) {
+        eta = this.visit_selected_to_create_service.eta;
+      }
+
+      if(this.visit_selected_to_create_service.etd != null) {
+         etd= this.visit_selected_to_create_service.etd;
+      }
+
       const docRef = await addDoc(collection(db, "services"), {
         service_available_ref: this.service_available_selected,
         real_start_time: null,
         real_end_time: null,        
-        estimated_start_time: null,
-        estimated_end_time: null,
+        estimated_start_time: eta,
+        estimated_end_time: etd,
         visit_ref: this.visit_selected_to_create_service.id,
         state: 'Requested'
       });

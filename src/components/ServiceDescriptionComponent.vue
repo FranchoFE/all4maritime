@@ -16,12 +16,18 @@
                 <v-list-item-title class="text-h5 mb-1">
                   {{ getServiceAvailableType(service.service_available_ref) }}
                 </v-list-item-title>
-                <v-list-item-subtitle
+                <v-list-item-subtitle v-if="service.real_start_time == null"
                   >Inicio: {{ getValue(service.estimated_start_time) }}
                 </v-list-item-subtitle>
-                <v-list-item-subtitle
+                <v-list-item-subtitle v-if="service.real_end_time == null"
                   >Fin: {{ getValue(service.estimated_end_time) }}
-                </v-list-item-subtitle>                           
+                </v-list-item-subtitle>  
+                <v-list-item-subtitle v-if="service.real_start_time != null"
+                  >Inicio: <b> {{ getValue(service.real_start_time) }} </b>
+                </v-list-item-subtitle>
+                <v-list-item-subtitle v-if="service.real_end_time != null"
+                  >Fin: <b>{{ getValue(service.real_end_time) }} </b>
+                </v-list-item-subtitle>                                         
                 <v-list-item-subtitle
                    >Estado: {{ service.state }}
                 </v-list-item-subtitle>              
@@ -36,7 +42,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-dialog v-if="rol == 'client'"
+              <v-dialog v-if="rol == 'supplier'"
                 v-model="dialog[index]"
                 :retain-focus="false"
                 max-width="400px"
@@ -48,7 +54,7 @@
                 </template>
                 <v-card>
                   <v-card-title class="colorPrincipal">
-                    <span class="white--text fontPrincipal">Establecer horas para el servicio de 
+                    <span class="white--text fontPrincipal">Establecer horas reales para el servicio de 
                       {{ getServiceAvailableType(service.service_available_ref) }} </span>
                   </v-card-title> 
                   <v-divider></v-divider>
@@ -56,7 +62,7 @@
 
                   <datetime class="pt-6" v-model="start_time_selected[index]" type="datetime" input-id="startDate">
      
-                    <label for="startDate" slot="before">Tiempo estimado de inicio</label>
+                    <label for="startDate" slot="before">Inicio del servicio</label>
                    
                     <template slot="button-cancel">
                       <v-btn class="btnPrincipal" text>
@@ -83,7 +89,7 @@
 
                   <datetime class="pt-6" v-model="end_time_selected[index]" type="datetime" input-id="endDate">
       
-                      <label for="endDate" slot="before">Tiempo estimado de fin</label>
+                      <label for="endDate" slot="before">Fin del servicio</label>
                     
                       <template slot="button-cancel">
                       <v-btn class="btnPrincipal">
@@ -335,16 +341,16 @@ export default {
 
       var data_to_update = {};
       if (this.start_time_selected[index] != null && this.start_time_selected[index] != '') {
-        data_to_update["estimated_start_time"] = Timestamp.fromDate(new Date(this.start_time_selected[index]));
-        service.estimated_start_time = Timestamp.fromDate(new Date(this.start_time_selected[index]));
+        data_to_update["real_start_time"] = Timestamp.fromDate(new Date(this.start_time_selected[index]));
+        service.real_start_time = Timestamp.fromDate(new Date(this.start_time_selected[index]));
       } else {
-        data_to_update["estimated_start_time"] = null;
+        data_to_update["real_start_time"] = null;
       }
       if (this.end_time_selected[index] != null && this.end_time_selected[index] != '') {
-        data_to_update["estimated_end_time"] = Timestamp.fromDate(new Date(this.end_time_selected[index]));
-        service.estimated_end_time = Timestamp.fromDate(new Date(this.end_time_selected[index]));
+        data_to_update["real_end_time"] = Timestamp.fromDate(new Date(this.end_time_selected[index]));
+        service.real_end_time = Timestamp.fromDate(new Date(this.end_time_selected[index]));
       } else {
-        data_to_update["estimated_end_time"] = null;
+        data_to_update["real_end_time"] = null;
       }
       console.log("dato a mandar", data_to_update);
 

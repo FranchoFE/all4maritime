@@ -117,6 +117,56 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-dialog v-model="dialog_change_eta" max-width="550px">
+            <v-card>
+              <v-card-title class="colorPrincipal">
+                <span class="white--text fontPrincipal">Modificar ETA</span>
+              </v-card-title>
+              
+              <v-card-text class="pt-4">
+                <v-container>
+                 
+
+                    <datetime class="pt-6" v-model="eta_selected" type="datetime" input-id="eta_date">
+     
+                    <label for="eta_date" slot="before">Establecer Nuevo ETA</label>
+                   
+                    <template slot="button-cancel">
+                      <v-btn class="btnPrincipal" text>
+                        <v-icon>
+                          mdi-close
+                        </v-icon>                           
+                      </v-btn>    
+                    </template>
+                    <template slot="button-confirm" slot-scope="scope">
+                      <v-btn class="btnPrincipal" text>
+                        <span v-if='scope.step === "date"' class='white--text'>
+                          <v-icon>
+                            mdi-chevron-double-right
+                          </v-icon>                           
+                        </span>
+                        <span v-else class='white--text'>
+                          <v-icon>
+                            mdi-check
+                          </v-icon> 
+                        </span>
+                      </v-btn> 
+                    </template>                     
+                  </datetime>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn class="btnPrincipal" text @click="close_eta">
+                    <span class="white--text">Cancelar</span>
+                </v-btn>                
+                <v-btn class="btnPrincipal" text @click="change_eta">
+                    <span class="white--text">Modificar</span>
+                </v-btn>  
+              </v-card-actions>
+            </v-card>
+          </v-dialog>          
         </v-toolbar>
       </template>
       <template v-slot:[`item.company_ref`]="{ item }">
@@ -161,10 +211,13 @@
         </td>
       </template>      
       <template v-slot:[`item.actions`]="{ item }" v-if="this.rol == 'client'">
-        <v-icon small class="mr-2" @click="show_create_service_dialog(item)">
+        <v-icon class="mr-2" @click="show_create_service_dialog(item)">
           mdi-plus
         </v-icon>
-      </template>
+        <v-icon class="mr-2" v-if="is_enabled_change_eta(item)" @click="show_change_service_dialog(item)">
+          mdi-lightning-bolt
+        </v-icon>        
+      </template>    
     </v-data-table>
   </div>
 </template>
@@ -172,7 +225,8 @@
 <script>
 import ServiceDescriptionComponent from "./ServiceDescriptionComponent";
 import { db } from "@/fb.js";
-import { collection, onSnapshot, addDoc } from "firebase/firestore";
+import { collection, onSnapshot, addDoc, doc, Timestamp, updateDoc } from "firebase/firestore";
+import { Datetime } from 'vue-datetime';
 
 export default {
   name: "ServiceListComponent",
@@ -180,12 +234,14 @@ export default {
 
   components: {
     ServiceDescriptionComponent,
+    Datetime,
   },
 
   data: () => ({
     create_service_title: "",
     visit_selected_to_create_service: null,
     dialog: false,
+    dialog_change_eta: false,
     visits: [],
     services: [],
     companies: [],
@@ -202,6 +258,7 @@ export default {
     rating_selected: "",
     unit_selected: "",
     service_available_selected: "",
+    eta_selected: "",
     snackbar: false,
     text: 'Servicio solicitado correctamente.',
     timeout: 4000,
@@ -418,6 +475,9 @@ export default {
     getAllServices(element){
       return this.services.filter((service) => service.visit_ref == element.id);
     },
+    getAllServicesByState(element, state){
+      return this.services.filter((service) => service.visit_ref == element.id && service.state == state);
+    },    
     getAllServicesAvailables(){
       return this.services_availables;
     },
@@ -478,10 +538,39 @@ export default {
       this.dialog = true;
     },
 
+    is_enabled_change_eta(item)  {
+
+      var resp = false;
+
+      if(item.ata == null || item.ata == '')
+      {
+        var servicesInProgress = this.getAllServicesByState(item, 'In progress');
+        var servicesFinished = this.getAllServicesByState(item, 'Finished');
+
+        if (servicesInProgress.length == 0 &&  servicesFinished.length == 0)
+        {
+          resp = true;
+        }
+      }
+        
+      return resp;  
+    },
+
+    show_change_service_dialog(item) {
+      this.visit_selected_to_create_service = item;
+      this.dialog_change_eta = true;
+    },
+
     close() {
       this.create_service_title = "";
       this.visit_selected_to_create_service = null;
       this.dialog = false;
+    },
+
+    close_eta() {
+      this.visit_selected_to_create_service = null;
+      this.dialog_change_eta = false;
+      this.eta_selected = null;
     },
 
     async create_service() {
@@ -511,6 +600,49 @@ export default {
 
       this.close();
     },
+
+    async change_eta() {
+
+      var vis = this.visit_selected_to_create_service;
+
+      var data_to_update = {};
+      if (this.eta_selected != null && this.eta_selected != '') {
+
+        const visit_from_db = doc(db, "visits", vis.id);
+        var eta_new =  Timestamp.fromDate(new Date(this.eta_selected));
+
+        // Calcular nuevo ETD
+        var timeEtd = vis.etd.toDate().getTime();
+        var timeEta = vis.eta.toDate().getTime();
+        var difference = timeEtd - timeEta;
+        var adjustedTimeAsMs = new Date(this.eta_selected);
+        adjustedTimeAsMs.setTime(adjustedTimeAsMs.getTime() + (difference));        
+        var etd_calculated = Timestamp.fromDate(adjustedTimeAsMs);
+
+        // Actualiza el ETA de la visit y el nuevo ETD calculado
+        data_to_update["eta"] = eta_new;
+        data_to_update["etd"] = etd_calculated;
+        await updateDoc(visit_from_db, data_to_update);
+
+        // Mueve todos los servicios con fecha de inicio y fin estimada (ETA y ATD)
+        var servs = this.getAllServices(vis);        
+         servs.forEach((srv) => {       
+          var service_from_db = doc(db, "services", srv.id);
+          var data_service_to_update = {};
+          data_service_to_update["estimated_start_time"] = eta_new;
+          data_service_to_update["estimated_end_time"] = etd_calculated;
+          this.change_eta_service_doc(service_from_db, data_service_to_update);     
+        });
+
+      }      
+
+      this.close_eta();
+    },
+
+    async change_eta_service_doc(service_from_db, data_service_to_update) {
+      await updateDoc(service_from_db, data_service_to_update); 
+    },
+
   },
 };
 </script>

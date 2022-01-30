@@ -120,39 +120,44 @@
           <v-dialog v-model="dialog_change_eta" max-width="550px">
             <v-card>
               <v-card-title class="colorPrincipal">
-                <span class="white--text fontPrincipal">Modificar ETA</span>
+                <span class="white--text fontPrincipal">Modificar Tiempo Estimado de llegada (ETA)</span>
               </v-card-title>
               
               <v-card-text class="pt-4">
                 <v-container>
-                 
+                    <v-row>                  
 
-                    <datetime class="pt-6" v-model="eta_selected" type="datetime" input-id="eta_date">
-     
-                    <label for="eta_date" slot="before">Establecer Nuevo ETA</label>
-                   
-                    <template slot="button-cancel">
-                      <v-btn class="btnPrincipal" text>
-                        <v-icon>
-                          mdi-close
-                        </v-icon>                           
-                      </v-btn>    
-                    </template>
-                    <template slot="button-confirm" slot-scope="scope">
-                      <v-btn class="btnPrincipal" text>
-                        <span v-if='scope.step === "date"' class='white--text'>
-                          <v-icon>
-                            mdi-chevron-double-right
-                          </v-icon>                           
-                        </span>
-                        <span v-else class='white--text'>
-                          <v-icon>
-                            mdi-check
-                          </v-icon> 
-                        </span>
-                      </v-btn> 
-                    </template>                     
-                  </datetime>
+                      <datetime class="pt-6 circle" 
+                      input-style="border-bottom-size: 3px;border-bottom-style: solid;border-bottom-color: blue;
+                      background: white; height:50px"
+                      v-model="eta_selected" type="datetime" input-id="eta_date">
+                      
+                        <label for="eta_date" slot="before" class="pr-3" >Selecciona Nuevo ETA</label>
+                      
+                        <template slot="button-cancel">
+                          <v-btn class="btnPrincipal" text>
+                            <v-icon>
+                              mdi-close
+                            </v-icon>                           
+                          </v-btn>    
+                        </template>
+                        <template slot="button-confirm" slot-scope="scope">
+                          <v-btn class="btnPrincipal" text>
+                            <span v-if='scope.step === "date"' class='white--text'>
+                              <v-icon>
+                                mdi-chevron-double-right
+                              </v-icon>                           
+                            </span>
+                            <span v-else class='white--text'>
+                              <v-icon>
+                                mdi-check
+                              </v-icon> 
+                            </span>
+                          </v-btn> 
+                        </template>                 
+                    </datetime>
+
+                  </v-row>
                 </v-container>
               </v-card-text>
 
@@ -262,6 +267,7 @@ export default {
     snackbar: false,
     text: 'Servicio solicitado correctamente.',
     timeout: 4000,
+    options: {ok: 'Ok', cancel: 'Cancel'},
     headers: [
       {
         text: "Escala",

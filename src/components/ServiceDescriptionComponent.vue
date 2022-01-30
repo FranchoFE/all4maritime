@@ -58,11 +58,14 @@
                       <b>{{ getServiceAvailableType(service.service_available_ref) }}</b> </span>
                   </v-card-title> 
                   <v-divider></v-divider>
-                  <v-card-text style="height: 150px">
+                  <v-card-text style="height: 180px">
 
-                  <datetime class="pt-6" v-model="start_time_selected[index]" type="datetime" input-id="startDate">
+                  <datetime class="pt-6" 
+                      input-style="border-bottom-size: 3px;border-bottom-style: solid;border-bottom-color: blue;
+                      background: white; height:50px"
+                      v-model="start_time_selected[index]" type="datetime" input-id="startDate">
      
-                    <label for="startDate" slot="before">Inicio del servicio</label>
+                    <label class="pr-3" for="startDate" slot="before">Inicio del servicio</label>
                    
                     <template slot="button-cancel">
                       <v-btn class="btnPrincipal" text>
@@ -87,9 +90,12 @@
                     </template>                     
                   </datetime>
 
-                  <datetime class="pt-6" v-model="end_time_selected[index]" type="datetime" input-id="endDate">
+                  <datetime class="pt-6" 
+                    input-style="border-bottom-size: 3px;border-bottom-style: solid;border-bottom-color: blue;
+                      background: white; height:50px"
+                    v-model="end_time_selected[index]" type="datetime" input-id="endDate">
       
-                      <label for="endDate" slot="before">Fin del servicio</label>
+                      <label class="pr-7" for="endDate" slot="before">Fin del servicio</label>
                     
                       <template slot="button-cancel">
                       <v-btn class="btnPrincipal">

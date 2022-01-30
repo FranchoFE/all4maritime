@@ -34,7 +34,7 @@
           <v-dialog v-model="dialog" max-width="550px">
             <v-card>
               <v-card-title class="colorPrincipal">
-                <span class="white--text fontPrincipal">{{ create_service_title }}</span>
+                <span class="white--text fontPrincipal word-break">{{ create_service_title }}</span>
               </v-card-title>
               
               <v-card-text class="pt-4">

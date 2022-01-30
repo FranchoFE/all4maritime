@@ -54,8 +54,8 @@
                 </template>
                 <v-card>
                   <v-card-title class="colorPrincipal">
-                    <span class="white--text fontPrincipal">Establecer horas reales para el servicio de 
-                      {{ getServiceAvailableType(service.service_available_ref) }} </span>
+                    <span class="white--text fontPrincipal word-break">Establecer horas reales para el servicio de 
+                      <b>{{ getServiceAvailableType(service.service_available_ref) }}</b> </span>
                   </v-card-title> 
                   <v-divider></v-divider>
                   <v-card-text style="height: 150px">
@@ -140,8 +140,8 @@
                 </template>
                 <v-card>
                   <v-card-title class="colorPrincipal">
-                    <span class="white--text fontPrincipal">¿Desea borrar el servicio 
-                      de {{ getServiceAvailableType(service.service_available_ref) }} ?</span>
+                    <span class="white--text fontPrincipal word-break">¿Desea borrar el servicio 
+                      de {{ getServiceAvailableType(service.service_available_ref) }}?</span>
                   </v-card-title>                  
                   <v-divider></v-divider>
                 <v-card-actions class="pt-6"> 
@@ -168,8 +168,8 @@
                 </template>
                 <v-card>
                   <v-card-title class="colorPrincipal">
-                    <span class="white--text fontPrincipal">¿Desea cambiar el estado del servicio 
-                      de {{ getServiceAvailableType(service.service_available_ref) }} ?</span>
+                    <span class="white--text fontPrincipal word-break">¿Desea cambiar el estado del servicio 
+                      de <b>{{ getServiceAvailableType(service.service_available_ref) }}</b>?</span>
                   </v-card-title>                  
                   <v-divider></v-divider>
                   <v-card-text style="height: 100px">

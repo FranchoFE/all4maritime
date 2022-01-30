@@ -42,7 +42,10 @@
     color: white !important;
 }
 
-
+.word-break
+{ 
+    word-break:break-word !important;
+}
 
 .titleComponent {
   font-family: "Aldrich";

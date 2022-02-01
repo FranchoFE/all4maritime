@@ -19,4 +19,5 @@ const firebaseConfig = {
 console.log("inicializando App");
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+db._settings.experimentalAutoDetectLongPolling = true;
 //connectFirestoreEmulator(db, "localhost", 8090);
